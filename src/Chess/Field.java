@@ -1,7 +1,7 @@
 package Chess;
 
 public class Field {
-    int x, y;
+    private int x, y;
 
     public int getX() {
         return x;
@@ -21,7 +21,14 @@ public class Field {
     }
 
     public void inverz() {
-        this.x = 8-this.x;
-        this.y = 8-this.y;
+        this.x = 7-this.x;
+        this.y = 7-this.y;
+    }
+
+    public Boolean isEqual(Field field){
+        if(field.getX() == this.x && field.getY() == this.y){
+            return true;
+        }
+        return false;
     }
 }
