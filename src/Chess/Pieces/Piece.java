@@ -8,7 +8,7 @@ import javax.swing.*;
 public abstract class Piece {
     Field location;
     Boolean isLive = true;
-    Boolean color;
+    public Boolean color;
 
     public Piece(Field kezdoHely, Boolean color) {
         this.location = kezdoHely;
@@ -20,6 +20,9 @@ public abstract class Piece {
         if(checkMove(hova)){
             this.location.setXY(hova.getX(), hova.getY());
         }else{
+            System.out.println("currentX: "+location.getX()+"  currentY: "+location.getY());
+            System.out.println("wantedX: "+hova.getX()+"  wantedY: "+hova.getY());
+            System.out.println("Color: "+color);
             throw new IncorrectMoveException("Nem szabalyos lepes!");
         }
     }

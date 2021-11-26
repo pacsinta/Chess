@@ -6,11 +6,8 @@ import Chess.Field;
 import javax.swing.*;
 
 public class Pawn extends Piece{
-	Boolean color;
-	
 	public Pawn(Field kezdoHely, Boolean color) {
 		super(kezdoHely, color);
-		this.color = color;
 	}
 
 	@Override
@@ -26,6 +23,7 @@ public class Pawn extends Piece{
 				return false;
 			}
 		}else {
+			System.out.println("ok");
 			if(this.location.getY()-hova.getY() > 2 || this.location.getY()-hova.getY() < 1) {
 				return false;
 			}

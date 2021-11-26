@@ -6,30 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class FieldActionListener implements ActionListener {
-    Field field;
+    Field buttonField;
+    GameController controller;
     JButton button;
 
-    Player white;
-    Player black;
-    PlayerMoveTypes currentMoveType;
-
-    public FieldActionListener(Field field, Player whitePlayer, Player blackPlayer, PlayerMoveTypes currentColor, JButton button){
-        this.field = field;
-        this.white = whitePlayer;
-        this.black = blackPlayer;
-        this.currentMoveType = currentColor;
+    public FieldActionListener(Field field, GameController controller, JButton button){
+        this.buttonField = field;
+        this.controller = controller;
         this.button = button;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(currentMoveType == PlayerMoveTypes.WhiteSelectPiece){
-            if(white.selectPiece(field)){
-                System.out.println("White Selected");
-                button.setBackground(Color.GREEN);
-            }
-        }else if(currentMoveType == PlayerMoveTypes.WhiteMovePiece){
-
-        }
+        controller.Move(buttonField, button);
     }
 }

@@ -1,6 +1,7 @@
 package Chess;
 
 import Chess.Exceptions.IncorrectMoveException;
+import Chess.Exceptions.NoPiece;
 import Chess.Pieces.*;
 
 import javax.swing.*;
@@ -37,7 +38,17 @@ public class Player {
     }
 
     public void move(Field field) throws IncorrectMoveException {
+        System.out.println("color4: "+piece[selectedPiece].color);
         piece[selectedPiece].move(field);
+    }
+
+    public Icon getIconByField(Field field) throws NoPiece {
+        for(int i = 0; i<16; i++){
+            if(piece[i].getLocation().isEqual(field)){
+                return piece[i].getIcon();
+            }
+        }
+        throw new NoPiece();
     }
 
     public Boolean selectPiece(Field field){
