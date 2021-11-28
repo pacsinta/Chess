@@ -42,6 +42,12 @@ public class Player {
         piece[selectedPiece].move(field);
     }
 
+    /**
+     * Visszaadja egy adott mezőn lévő bábu Iconját
+     * @param field A kiválasztott mező
+     * @return Icon ami a
+     * @throws NoPiece
+     */
     public Icon getIconByField(Field field) throws NoPiece {
         for(int i = 0; i<16; i++){
             if(piece[i].getLocation().isEqual(field)){

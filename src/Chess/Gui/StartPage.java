@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class StartPage extends JFrame {
     public StartPage(ChessTable table){
-        setSize(300, 200);
+        setSize(300, 150);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Start new game");
         setBackground(Color.CYAN);
@@ -17,12 +17,11 @@ public class StartPage extends JFrame {
 
         JPanel labelPanel = new JPanel();
         JLabel label = new JLabel("Chess");
-        label.setFont(new Font(null, Font.TYPE1_FONT, 25));
+        label.setFont(new Font(null, Font.BOLD, 25));
         labelPanel.add(label);
 
 
         JPanel buttonsPanel = new JPanel();
-        //buttonsPanel.setLayout(new GridLayout());
         buttonsPanel.setPreferredSize(new Dimension(300, 300));
         buttonsPanel.setBackground(Color.GREEN);
 

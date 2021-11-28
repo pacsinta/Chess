@@ -12,11 +12,13 @@ public class Pawn extends Piece{
 
 	@Override
 	public Boolean checkMove(Field hova) throws IncorrectMoveException {
-		this.elteroMezo(hova);
+		//this.elteroMezo(hova);
 
 		if(hova.getX() != this.location.getX()) {
 			return false;
 		}
+
+
 
 		if(color) {
 			if(hova.getY()-this.location.getY() > 2 || hova.getY()-this.location.getY() < 1) {

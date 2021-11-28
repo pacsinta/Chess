@@ -2,6 +2,7 @@ package Chess.Pieces;
 
 import Chess.Exceptions.IncorrectMoveException;
 import Chess.Field;
+import Chess.Player;
 
 import javax.swing.*;
 
@@ -20,13 +21,9 @@ public abstract class Piece {
         if(checkMove(hova)){
             this.location.setXY(hova.getX(), hova.getY());
         }else{
-            System.out.println("currentX: "+location.getX()+"  currentY: "+location.getY());
-            System.out.println("wantedX: "+hova.getX()+"  wantedY: "+hova.getY());
-            System.out.println("Color: "+color);
             throw new IncorrectMoveException("Nem szabalyos lepes!");
         }
     }
-
 
     public void kick() {
         isLive = false;
@@ -36,6 +33,8 @@ public abstract class Piece {
         return this.location;
     }
 
+
+    //todo delete
     public void elteroMezo(Field hova) throws IncorrectMoveException {
         if(location.getX() == hova.getX() && location.getY() == hova.getY()) {
             throw new IncorrectMoveException("Nem lehet ugyan oda lepni!");
