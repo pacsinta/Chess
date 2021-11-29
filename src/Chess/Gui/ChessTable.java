@@ -23,7 +23,11 @@ public class ChessTable extends JFrame {
         setSize(500, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Start new game");
-        setVisible(false);
+        setVisible(true);
+
+        JPanel timerPanel = new JPanel();
+        JLabel timeMonitor = new JLabel();
+        timerPanel.add(timeMonitor);
 
         JPanel fieldPanel = new JPanel();
         fieldPanel.setLayout(new GridLayout(8,8));
@@ -31,7 +35,7 @@ public class ChessTable extends JFrame {
         Player whitePlayer = new Player(true);
         Player blackPlayer = new Player(false);
 
-        GameController controller = new GameController(whitePlayer, blackPlayer);
+        GameController controller = new GameController(whitePlayer, blackPlayer, timeMonitor, playerCount);
 
         JButton[][] fields = new JButton[8][8];
         for (int x = 0; x<8; x++){
@@ -64,7 +68,10 @@ public class ChessTable extends JFrame {
 
 
 
-        add(fieldPanel);
+        add(fieldPanel, BorderLayout.CENTER);
+        add(timerPanel, BorderLayout.NORTH);
+
+        pack();
     }
 
     /**

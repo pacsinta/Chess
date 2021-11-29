@@ -38,7 +38,6 @@ public class Player {
     }
 
     public void move(Field field) throws IncorrectMoveException {
-        System.out.println("color4: "+piece[selectedPiece].color);
         piece[selectedPiece].move(field);
     }
 

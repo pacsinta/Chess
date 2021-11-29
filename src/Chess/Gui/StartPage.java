@@ -3,46 +3,54 @@ package Chess.Gui;
 import javax.swing.*;
 import java.awt.*;
 
-public class StartPage extends JFrame {
-    public StartPage(ChessTable table){
-        setSize(300, 150);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Start new game");
-        setBackground(Color.CYAN);
-        setFocusable(false);
-        setResizable(false);
-        setVisible(true);
+public class StartPage {
+    JFrame f;
 
-        setLayout(new BorderLayout());
+    public StartPage() {
+        f = new JFrame("Start Game");
+
+        f.setSize(300, 150);
+        f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        f.setTitle("Start new game");
+        f.setBackground(Color.CYAN);
+        f.setFocusable(false);
+        f.setResizable(false);
+        f.setVisible(true);
+
+        f.setLayout(new BorderLayout());
 
         JPanel labelPanel = new JPanel();
         JLabel label = new JLabel("Chess");
-        label.setFont(new Font(null, Font.BOLD, 25));
+        label.setFont(new Font(null, Font.BOLD, 40));
         labelPanel.add(label);
 
 
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setPreferredSize(new Dimension(300, 300));
+        buttonsPanel.setPreferredSize(new Dimension(400, 100));
         buttonsPanel.setBackground(Color.GREEN);
 
         JButton singlePlayer = new JButton("Single Player");
+        singlePlayer.setFont(new Font(null, Font.BOLD, 20));
 
         singlePlayer.addActionListener(action -> {
-            dispose();
-            table.setVisible(true);
+            f.dispose();
+            new ChessTable(false);
         });
 
         buttonsPanel.add(singlePlayer);
 
         JButton multiPlayer = new JButton("Multi Player");
+        multiPlayer.setFont(new Font(null, Font.BOLD, 20));
         multiPlayer.addActionListener(action -> {
-            dispose();
-            table.setVisible(true);
+            f.dispose();
+            new ChessTable(true);
         });
 
         buttonsPanel.add(multiPlayer);
 
-        add(labelPanel, BorderLayout.NORTH);
-        add(buttonsPanel, BorderLayout.CENTER);
+        f.add(labelPanel, BorderLayout.NORTH);
+        f.add(buttonsPanel, BorderLayout.CENTER);
+
+        f.pack();
     }
 }
