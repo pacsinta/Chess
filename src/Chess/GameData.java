@@ -1,8 +1,12 @@
 package Chess;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class GameData implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 6529685098267757690L;
+
     String player1;
     String player2;
     Boolean winner; //true ha a player1 győzött, false ha a player2

@@ -65,6 +65,7 @@ public class EndPage {
         JButton exitGame = new JButton("Exit");
         exitGame.addActionListener(e->{
             f.dispose();
+
         });
         BottomPanel.add(exitGame);
 

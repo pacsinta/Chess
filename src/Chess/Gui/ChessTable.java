@@ -71,6 +71,7 @@ public class ChessTable extends JFrame {
         giveUp.addActionListener(listener->{
             dispose();
 
+
             LinkedList<GameData> gameDataLinkedList = new LinkedList<>();
             try {
                 FileInputStream inputStream = new FileInputStream("games.ser");

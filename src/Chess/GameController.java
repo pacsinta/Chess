@@ -159,6 +159,7 @@ public class GameController {
 
 
     public GameData endGame(){
+        timer.isRunning = false;
         if(currentMoveType == PlayerMoveTypes.WhiteMovePiece || currentMoveType == PlayerMoveTypes.WhiteSelectPiece){
             return new GameData("WhitePlayer", "BlackPlayer", timer.getSeconds(), false, lepesszam);
         }else{
