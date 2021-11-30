@@ -1,45 +1,33 @@
 package Chess.Pieces;
 
-import Chess.Exceptions.IncorrectMoveException;
 import Chess.Field;
+import Chess.Player;
 
 import javax.swing.*;
 
 public class King extends Piece{
-	Boolean sakk = false;
-	
 	public King(Field kezdohely, Boolean color) {
 		super(kezdohely, color);
 	}
 
 	@Override
-	public Boolean checkMove(Field hova) throws IncorrectMoveException {
-		this.elteroMezo(hova);
+	public Boolean checkMove(Field hova) {
+		int elteres_X = Math.abs(this.location.getX()-hova.getX());
+		int elteres_Y = Math.abs(this.location.getY()-hova.getY());
 
-
-		int elteres_X = Math.abs(super.location.getX()-hova.getX());
-		int elteres_Y = Math.abs(super.location.getY()-hova.getY());
-
-		if(elteres_X != 1) {
-			if(elteres_Y != 1) {
-				return false;
-			}
-		}else if(elteres_Y != 1) {
-			if(elteres_X != 1) {
-				return false;
-			}
-		}
-
-		// TODO utes ellenerzes
-		return true;
+		System.out.println("x: "+elteres_X);
+		System.out.println("Y: "+elteres_Y);
+		return elteres_X <= 1 && elteres_Y <= 1;
 	}
 
 	@Override
-	public void move(Field hova) throws IncorrectMoveException {
-
-		
-		
-		this.location.setXY(hova.getX(), hova.getY());
+	public Field checkCollision(Field honnan, Field hova, Player player) {
+		for (int i = 0; i < 16; i++) {
+			if(player.getPiece()[i].getLocation().isEqual(hova)){
+				return hova;
+			}
+		}
+		return null;
 	}
 
 	@Override

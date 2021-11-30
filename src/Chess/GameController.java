@@ -1,7 +1,6 @@
 package Chess;
 
-import Chess.Exceptions.IncorrectMoveException;
-import Chess.Exceptions.NoPiece;
+import Chess.Enums.PlayerMoveTypes;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +15,15 @@ public class GameController {
     JButton selectedButton;
     Field selectedField;
 
+
+    /**
+     * A játék mechanikáért felel.
+     *
+     * @param whitePlayer Fehér játékos referenciája
+     * @param blackPlayer Fekete játékos referenciája
+     * @param timeMonitor Az idő mutató referenciája
+     * @param playerCount Ha igaz akkor 2 játékos módban van, ha hamis akkor egy játékos módban van.
+     */
     public GameController(Player whitePlayer, Player blackPlayer, JLabel timeMonitor, Boolean playerCount) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
@@ -25,10 +33,16 @@ public class GameController {
         timerThread.start();
     }
 
+    /**
+     * Ha egy mezőre klikkelt a felhasználó, akkor aktiválódik.
+     * Vagy kiválaszt egy bábut, vagy egy már kiválasztott bábut mozgat.
+     * @param clickedField A mező értéke amire klikkkelt a felhasználó
+     * @param buttonClicked A gomb, ami aktiválódott
+     */
     public void Move(Field clickedField, JButton buttonClicked) {
         switch (currentMoveType) {
             case WhiteSelectPiece -> {
-                if (whitePlayer.selectPiece(clickedField)) {
+                if (whitePlayer.checkPieceIsOnField(clickedField)!=-1) {
                     SelectField(clickedField, buttonClicked);
                     currentMoveType = PlayerMoveTypes.WhiteMovePiece;
                 }
@@ -37,7 +51,7 @@ public class GameController {
                 movePiece(whitePlayer, blackPlayer, clickedField, buttonClicked);
             }
             case BlackSelectPiece -> {
-                if (blackPlayer.selectPiece(clickedField)) {
+                if (blackPlayer.checkPieceIsOnField(clickedField)!=-1) {
                     SelectField(clickedField, buttonClicked);
                     currentMoveType = PlayerMoveTypes.BlackMovePiece;
                 }
@@ -49,51 +63,34 @@ public class GameController {
         System.out.println(currentMoveType);
     }
 
-    private interface SpecialFor_Lambda {
-        int forNewValue(int value);
-    }
-    private interface SpecialForTest{
-        Boolean testFor();
-    }
-
-
-    private Boolean specialFor(int yStart, int yEnd, int xStart, int xEnd, SpecialFor_Lambda newX, SpecialFor_Lambda newY, Player player) {
-        for (int x = xStart; x < xEnd; x = newX.forNewValue(x)) {
-            for (int y = yStart; y < yEnd; y = newY.forNewValue(y)) {
-                if (player.selectPiece(new Field(x, y))){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    //Megnézzük, hogy van-e az útban saját bábu
-    //Igaz ha nincs, hamis ha van
-    private Boolean testOwnPieceCollision(Field startField, Field endField, Player player) {
-        if (startField.getY() > endField.getY()) {
-            if (startField.getX() > endField.getY()) {
-                return specialFor(startField.getY() , endField.getY(), startField.getX(), endField.getX(), x -> x--, y -> y--, player);
-            } else {
-                return specialFor(startField.getY(), endField.getY(), startField.getX(), endField.getX(), x -> x++, y -> y--, player);
-            }
-        } else {
-            if (startField.getX() > endField.getY()) {
-                return specialFor(startField.getY(), endField.getY(), startField.getX(), endField.getX(), x -> x--, y -> y++, player);
-            } else {
-                return specialFor(startField.getY(), endField.getY(), startField.getX(), endField.getX(), x -> x++, y -> y++, player);
-            }
-        }
-    }
-
+    /**
+     * Elvégzi a kiválasztott bábu mozgatását, vagy egy új bábut választ ki.
+     * Ha egy ellenséges bábu helyére lépünk kiüti azt.
+     * Nem lehet úgy lépni, hogy utána a király sakkban legyen.
+     * Ellenőrzi a sakk-mattot/pattot.
+     *
+     * @param moving A lépést végrehajtó játékos referenciája
+     * @param notMoving A lépést csak néző játékos referenciája
+     * @param clickedField A kiválasztott mező értéke
+     * @param buttonClicked A megnyomott gomb referenciája
+     */
     private void movePiece(Player moving, Player notMoving, Field clickedField, JButton buttonClicked) {
-        if (moving.selectPiece(clickedField)) {
+        if (moving.checkPieceIsOnField(clickedField)!=-1) { //Ha saját bábura klikkelünk, akkor megváltoztatjuk a kiválasztott bábut
             changeBackButtonColor();
             SelectField(clickedField, buttonClicked);
-        } else if (!notMoving.selectPiece(clickedField)) {
-            if (testOwnPieceCollision(selectedField, clickedField, moving)) {
-                try {
-                    moving.move(clickedField);
+        } else {
+            try {
+                moving.selectPiece(selectedField);
+                moving.move(clickedField, notMoving);
+
+                if(checkCheck(moving, notMoving)){
+                    moving.moveBack(); //Ha a lépés után sakkban áll a király, akkor újra kell lépni
+                    System.out.println("Nem lehet sakk a lepes utan");
+                }else{
+                    if (notMoving.checkPieceIsOnField(clickedField)!=-1){
+                        notMoving.kickSelected();
+                        System.out.println("ok");
+                    }
 
                     buttonClicked.setIcon(moving.getIconByField(clickedField));
                     selectedButton.setIcon(null);
@@ -107,13 +104,20 @@ public class GameController {
                     } else {
                         currentMoveType = PlayerMoveTypes.WhiteSelectPiece;
                     }
-                } catch (IncorrectMoveException | NoPiece e) {
-                    System.out.println(e.getMessage());
                 }
+
+
+                checkMatt();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                moving.cleanSelect();
             }
         }
     }
 
+    /**
+     * Visszaállítja a kiválasztott mező színét az eredeti színre. (Fekete vagy fehér.)
+     */
     private void changeBackButtonColor() {
         if (selectedField.getX() % 2 == 0) {
             if (selectedField.getY() % 2 == 1) {
@@ -130,11 +134,34 @@ public class GameController {
         }
     }
 
-    //Kiválasztjuk, hogy melyik bábuval akarunk lépni
-    //click
+
+    /**
+     * Kiválasztjuk, hogy melyik bábuval akarunk lépni.
+     * @param clickedField A lenyomott mező értéke.
+     * @param buttonClicked A lenyomott mező gomja.
+     */
     private void SelectField(Field clickedField, JButton buttonClicked) {
         buttonClicked.setBackground(Color.LIGHT_GRAY);
         selectedButton = buttonClicked;
         selectedField = clickedField;
+    }
+
+    /**
+     * Ellenőrizzük, hogy a király kapott-e sakkot.
+     * @param testPlayer Annak a játékosnak a refereciája, amelyik királyát akarjuk nézni.
+     * @param attacker A másik játékos referenciája.
+     * @return Ha igaz, akkor a király sakkban áll.
+     * @throws Exception
+     */
+    private Boolean checkCheck(Player testPlayer, Player attacker) throws Exception {
+        return attacker.testCheck(testPlayer.getPiece()[4].getLocation(), attacker);
+    }
+
+    private Boolean checkMatt(){
+        return true;
+    }
+
+    public GameData endGame(){
+        return null;
     }
 }

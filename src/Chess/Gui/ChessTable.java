@@ -7,6 +7,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.LinkedList;
 
 public class ChessTable extends JFrame {
     Boolean playerCount;
@@ -15,6 +20,7 @@ public class ChessTable extends JFrame {
      * Létrehozza a sakk táblát, és elindítja a játék logikát.
      * Ez utóbbi lehet 1 vagy 2 játékos módban.
      * A tábla mérete alapból 500x500, de ez a felhasználó álltal átméretezhető.
+     * A sakkmező gombokból áll. Felette van egy időjelző szöveg. Melette pedig egy feladás gomb.
      * @param playerCount Ha igaz 2 játékos módban indul el a játék, ha hamis akkor 1 játékos módban
      */
     public ChessTable(Boolean playerCount){
@@ -67,9 +73,42 @@ public class ChessTable extends JFrame {
         addPieces(fields, blackPlayer.getPiece());
 
 
+        JButton giveUp = new JButton("Feladás");
+        giveUp.addActionListener(listener->{
+            dispose();
+
+            LinkedList<GameData> gameDataLinkedList = new LinkedList<>();
+            try {
+                FileInputStream inputStream = new FileInputStream("games.ser");
+                ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+                LinkedList<?> bufferList = (LinkedList<?>) objectInputStream.readObject();
+                for (Object o : bufferList) {
+                    if (o instanceof GameData) {
+                        gameDataLinkedList.add((GameData) o);
+                    }
+                }
+                objectInputStream.close();
+                inputStream.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("Ezelőtt még nem volt elmentve játék.");
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            gameDataLinkedList.add(controller.endGame());
+
+            new EndPage(gameDataLinkedList);
+        });
+        giveUp.setPreferredSize(new Dimension(80, 100));
+        JPanel giveUpPanel = new JPanel();
+        giveUpPanel.setLayout(new BoxLayout(giveUpPanel, BoxLayout.Y_AXIS));
+        giveUpPanel.add(Box.createVerticalGlue());
+        giveUpPanel.add(giveUp);
+        giveUpPanel.add(Box.createVerticalGlue());
+
 
         add(fieldPanel, BorderLayout.CENTER);
         add(timerPanel, BorderLayout.NORTH);
+        add(giveUpPanel, BorderLayout.EAST);
 
         pack();
     }

@@ -1,7 +1,7 @@
 package Chess.Pieces;
 
-import Chess.Exceptions.IncorrectMoveException;
 import Chess.Field;
+import Chess.Player;
 
 import javax.swing.*;
 
@@ -13,16 +13,27 @@ public class Queen extends Piece{
 	}
 
 	@Override
-	public Boolean checkMove(Field hova) throws IncorrectMoveException {
-		this.elteroMezo(hova);
-
-		if(super.location.getX() != hova.getX() && super.location.getY() != hova.getY()) {
+	public Boolean checkMove(Field hova) {
+		if(this.location.getX() != hova.getX() && this.location.getY() != hova.getY()) {
 			if(Math.abs(super.location.getX()-hova.getX()) != Math.abs(super.location.getY()-hova.getY())){ //�tl� ellen�rz�se
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	@Override
+	public Field checkCollision(Field honnan, Field hova, Player player) {
+		Bishop buffBishop = new Bishop(honnan, this.color);
+		Rook buffRook = new Rook(honnan, this.color);
+
+		System.out.println("Hova2: "+hova.getX()+" "+hova.getY());
+		System.out.println("Honnan2: "+honnan.getX()+" "+honnan.getY());
+		if(honnan.getX()==hova.getX() || honnan.getY() == hova.getY()){
+			return buffRook.checkCollision(honnan, hova, player);
+		}
+		return buffBishop.checkCollision(honnan, hova, player);
 	}
 
 	@Override

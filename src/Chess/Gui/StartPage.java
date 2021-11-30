@@ -6,6 +6,9 @@ import java.awt.*;
 public class StartPage {
     JFrame f;
 
+    /**
+     * Létrehozza a start menüt. Mérete fix.
+     */
     public StartPage() {
         f = new JFrame("Start Game");
 
