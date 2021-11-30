@@ -14,18 +14,12 @@ import java.io.ObjectInputStream;
 import java.util.LinkedList;
 
 public class ChessTable extends JFrame {
-    Boolean playerCount;
-
     /**
      * Létrehozza a sakk táblát, és elindítja a játék logikát.
-     * Ez utóbbi lehet 1 vagy 2 játékos módban.
      * A tábla mérete alapból 500x500, de ez a felhasználó álltal átméretezhető.
      * A sakkmező gombokból áll. Felette van egy időjelző szöveg. Melette pedig egy feladás gomb.
-     * @param playerCount Ha igaz 2 játékos módban indul el a játék, ha hamis akkor 1 játékos módban
      */
-    public ChessTable(Boolean playerCount){
-        this.playerCount = playerCount;
-
+    public ChessTable(){
         setSize(500, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Start new game");
@@ -41,7 +35,7 @@ public class ChessTable extends JFrame {
         Player whitePlayer = new Player(true);
         Player blackPlayer = new Player(false);
 
-        GameController controller = new GameController(whitePlayer, blackPlayer, timeMonitor, playerCount);
+        GameController controller = new GameController(whitePlayer, blackPlayer, timeMonitor);
 
         JButton[][] fields = new JButton[8][8];
         for (int x = 0; x<8; x++){

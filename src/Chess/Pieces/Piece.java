@@ -40,10 +40,9 @@ public abstract class Piece {
      * @return Igaz, ha nincs bábu az útban, hamis ha van.
      */
     public Boolean checkOwnCollision(Field hova, Player player){
-        System.out.println(player.getPiece()[0].color);
-        System.out.println("Hova: "+hova.getX()+" "+hova.getY());
-        System.out.println("Honnan: "+location.getX()+" "+location.getY());
-        System.out.println(checkCollision(this.location, hova, player) == null);
+        if(checkCollision(this.location, hova, player) != null){
+            System.out.println();
+        }
         return checkCollision(this.location, hova, player) == null;
     }
 
@@ -64,7 +63,8 @@ public abstract class Piece {
      * @return Igaz, ha ki tudjuk ütni, hamis ha nem.
      * @throws Exception
      */
-    public Boolean checkPreCollision(Field hova, Player other) throws Exception {
+    public Boolean checkPreCollision(Field hova, Player other, Player player) throws Exception {
+        if(!checkOwnCollision(hova, player)) return false;
 
         //Ha x vagy y tengely mentén akarunk mozogni
         if(hova.getX() == this.location.getX()){
@@ -82,17 +82,34 @@ public abstract class Piece {
         }
 
         //Ha átlósan akarunk mozogni
-
+        if(hova.getX()>this.location.getX()){
+            if(hova.getY()>this.location.getY()){
+                return checkOwnCollision(new Field(hova.getX()-1, hova.getY()-1), other);
+            }else{
+                return checkOwnCollision(new Field(hova.getX()-1, hova.getY()+1), other);
+            }
+        }else{
+            if(hova.getY()>this.location.getY()){
+                return checkOwnCollision(new Field(hova.getX()+1, hova.getY()-1), other);
+            }else{
+                return checkOwnCollision(new Field(hova.getX()+1, hova.getY()+1), other);
+            }
+        }
     }
 
+    /**
+     * Beállít egy új helyet
+     * @param hova Az új hely értéke
+     */
     public void setLocation(Field hova){
         this.location.setXY(hova.getX(), hova.getY());
     }
     public void move(Field hova, Player moving, Player notMoving)  throws Exception{
         if(checkMove(hova)){
-            if(checkOwnCollision(hova, moving) && checkOtherCollision(hova, notMoving)){
+            if(checkOwnCollision(hova, moving) && checkPreCollision(hova, notMoving, moving)){
                 this.location.setXY(hova.getX(), hova.getY());
             }else{
+                System.out.println("t: "+checkOwnCollision(hova, moving));
                 throw new Exception("Van útban bábu!");
             }
         }else{

@@ -32,24 +32,15 @@ public class StartPage {
         buttonsPanel.setPreferredSize(new Dimension(400, 100));
         buttonsPanel.setBackground(Color.GREEN);
 
-        JButton singlePlayer = new JButton("Single Player");
+        JButton singlePlayer = new JButton("Start Game");
         singlePlayer.setFont(new Font(null, Font.BOLD, 20));
 
         singlePlayer.addActionListener(action -> {
             f.dispose();
-            new ChessTable(false);
+            new ChessTable();
         });
 
         buttonsPanel.add(singlePlayer);
-
-        JButton multiPlayer = new JButton("Multi Player");
-        multiPlayer.setFont(new Font(null, Font.BOLD, 20));
-        multiPlayer.addActionListener(action -> {
-            f.dispose();
-            new ChessTable(true);
-        });
-
-        buttonsPanel.add(multiPlayer);
 
         f.add(labelPanel, BorderLayout.NORTH);
         f.add(buttonsPanel, BorderLayout.CENTER);

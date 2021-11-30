@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameController {
-    Boolean isMultiplayer;
-
     PlayerMoveTypes currentMoveType = PlayerMoveTypes.WhiteSelectPiece;
     Player whitePlayer;
     Player blackPlayer;
@@ -15,6 +13,8 @@ public class GameController {
     JButton selectedButton;
     Field selectedField;
 
+    Timer timer;
+    int lepesszam = 0;
 
     /**
      * A játék mechanikáért felel.
@@ -22,14 +22,13 @@ public class GameController {
      * @param whitePlayer Fehér játékos referenciája
      * @param blackPlayer Fekete játékos referenciája
      * @param timeMonitor Az idő mutató referenciája
-     * @param playerCount Ha igaz akkor 2 játékos módban van, ha hamis akkor egy játékos módban van.
      */
-    public GameController(Player whitePlayer, Player blackPlayer, JLabel timeMonitor, Boolean playerCount) {
+    public GameController(Player whitePlayer, Player blackPlayer, JLabel timeMonitor) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
-        this.isMultiplayer = playerCount;
 
-        Thread timerThread = new Thread(new Timer(timeMonitor));
+        timer = new Timer(timeMonitor);
+        Thread timerThread = new Thread(timer);
         timerThread.start();
     }
 
@@ -83,15 +82,18 @@ public class GameController {
                 moving.selectPiece(selectedField);
                 moving.move(clickedField, notMoving);
 
+                Boolean kicking = false;
+                if (notMoving.checkPieceIsOnField(clickedField)!=-1){
+                    notMoving.selectPiece(clickedField);
+                    notMoving.kickSelected();
+                    kicking = true;
+                }
+
                 if(checkCheck(moving, notMoving)){
                     moving.moveBack(); //Ha a lépés után sakkban áll a király, akkor újra kell lépni
+                    if(kicking) notMoving.revive();
                     System.out.println("Nem lehet sakk a lepes utan");
                 }else{
-                    if (notMoving.checkPieceIsOnField(clickedField)!=-1){
-                        notMoving.kickSelected();
-                        System.out.println("ok");
-                    }
-
                     buttonClicked.setIcon(moving.getIconByField(clickedField));
                     selectedButton.setIcon(null);
                     changeBackButtonColor();
@@ -104,10 +106,8 @@ public class GameController {
                     } else {
                         currentMoveType = PlayerMoveTypes.WhiteSelectPiece;
                     }
+                    lepesszam++;
                 }
-
-
-                checkMatt();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 moving.cleanSelect();
@@ -154,14 +154,15 @@ public class GameController {
      * @throws Exception
      */
     private Boolean checkCheck(Player testPlayer, Player attacker) throws Exception {
-        return attacker.testCheck(testPlayer.getPiece()[4].getLocation(), attacker);
+        return attacker.testCheck(testPlayer.getPiece()[4].getLocation(), testPlayer);
     }
 
-    private Boolean checkMatt(){
-        return true;
-    }
 
     public GameData endGame(){
-        return null;
+        if(currentMoveType == PlayerMoveTypes.WhiteMovePiece || currentMoveType == PlayerMoveTypes.WhiteSelectPiece){
+            return new GameData("WhitePlayer", "BlackPlayer", timer.getSeconds(), false, lepesszam);
+        }else{
+            return new GameData("WhitePlayer", "BlackPlayer", timer.getSeconds(), true, lepesszam);
+        }
     }
 }

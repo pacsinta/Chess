@@ -3,6 +3,8 @@ package Chess;
 import Chess.Pieces.*;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class Player {
@@ -44,19 +46,6 @@ public class Player {
         return piece;
     }
 
-    /**
-     * Random mozgat egy bábut
-     */
-    public void randomMove(){
-        Random rand = new Random();
-        int pieceNumber = rand.nextInt(16);
-        while(!piece[pieceNumber].isAlive){
-            pieceNumber = rand.nextInt(16);
-        }
-
-        //ToDo
-    }
-
     Field previousField; //Mozgatás előtti mező értéke
 
     /**
@@ -88,6 +77,8 @@ public class Player {
         piece[selectedPiece].setLocation(previousField);
     }
 
+    public void revive(){piece[selectedPiece].isAlive = true;}
+
     /**
      * Megnézi,hogy a játékos tudna e ütni egy adott mezőt.
      * @param field A mező, amit tesztelni szeretnénk.
@@ -102,7 +93,7 @@ public class Player {
                     if(((Pawn) piece[i]).testCheck(field)){
                         return true;
                     }
-                }else if(piece[i].checkMove(field) && piece[i].checkOwnCollision(field, this) && piece[i].checkOtherCollision(field, other)){
+                }else if(piece[i].checkMove(field) && piece[i].checkOwnCollision(field, this) && piece[i].checkPreCollision(field, other, this)){
                     return true;
                 }
             }
@@ -113,8 +104,8 @@ public class Player {
     /**
      * Visszaadja egy adott mezőn lévő bábu Iconját
      * @param field A kiválasztott mező
-     * @return
-     * @throws Exception
+     * @return Az icon
+     * @throws Exception Ha nincs bábu a mezűn hibát dob.
      */
     public Icon getIconByField(Field field) throws Exception {
         for(int i = 0; i<16; i++){

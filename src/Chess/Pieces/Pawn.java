@@ -44,7 +44,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public Boolean checkPreCollision(Field hova, Player other) throws Exception {
+    public Boolean checkPreCollision(Field hova, Player other, Player player) throws Exception {
         throw new Exception("Gyalognál nem használható ez a metódus!");
     }
 

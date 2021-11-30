@@ -28,8 +28,6 @@ public class Queen extends Piece{
 		Bishop buffBishop = new Bishop(honnan, this.color);
 		Rook buffRook = new Rook(honnan, this.color);
 
-		System.out.println("Hova2: "+hova.getX()+" "+hova.getY());
-		System.out.println("Honnan2: "+honnan.getX()+" "+honnan.getY());
 		if(honnan.getX()==hova.getX() || honnan.getY() == hova.getY()){
 			return buffRook.checkCollision(honnan, hova, player);
 		}
