@@ -77,6 +77,9 @@ public class Player {
         piece[selectedPiece].setLocation(previousField);
     }
 
+    /**
+     * Feléleszti a kijelölt bábut.
+     */
     public void revive(){piece[selectedPiece].isAlive = true;}
 
     /**
@@ -152,5 +155,43 @@ public class Player {
      */
     public void kickSelected(){
         piece[selectedPiece].kick();
+    }
+
+    /**
+     * @param other
+     * @return
+     */
+    public Boolean checkMatt(Player other){
+        Field[] fields1 = new Field[16];
+        for (int i = 0; i < 16; i++) {
+            fields1[i] = new Field(piece[i].getLocation().getX(), piece[i].getLocation().getY());
+        }
+
+        for (int i = 0; i < 16; i++) {
+            if(piece[i].isAlive){
+                for (int x = 0; x < 8; x++) {
+                    for (int y = 0; y < 8; y++) {
+                        try{
+                            selectedPiece = i;
+                            if(!new Field(x, y).isEqual(piece[selectedPiece].getLocation())){
+                                //piece[i].move(new Field(x, y), this, other);
+                                piece[i].checkPreCollision(new Field(x, y), other, this);
+                                if(!testCheck(piece[4].getLocation(), other)){
+                                    return false;
+                                }
+                                //piece[i].setLocation(new Field(fields1[i].getX(), fields1[i].getY()));
+                                if(i==0){
+                                    System.out.println("Test1x: "+piece[i].getLocation().getX() + " Test1y: "+piece[i].getLocation().getY());
+                                }
+                            }
+
+                            selectedPiece = -1;
+                        }catch (Exception ignored){
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

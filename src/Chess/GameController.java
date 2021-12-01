@@ -107,6 +107,10 @@ public class GameController {
                         currentMoveType = PlayerMoveTypes.WhiteSelectPiece;
                     }
                     lepesszam++;
+
+                    if(notMoving.checkMatt(moving)){
+                        endGame();
+                    }
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -158,6 +162,10 @@ public class GameController {
     }
 
 
+    /**
+     * Befejezi a játékot, leállítja az órát.
+     * @return Visszaadja a játék adatait
+     */
     public GameData endGame(){
         timer.isRunning = false;
         if(currentMoveType == PlayerMoveTypes.WhiteMovePiece || currentMoveType == PlayerMoveTypes.WhiteSelectPiece){
