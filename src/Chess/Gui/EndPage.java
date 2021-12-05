@@ -43,14 +43,17 @@ public class EndPage {
         JPanel BottomPanel = new JPanel();
         JButton saveGame = new JButton("Save game");
         saveGame.addActionListener(listener->{
+            JButton button = (JButton) listener.getSource();
             try {
                 FileOutputStream outputStream = new FileOutputStream("games.ser");
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                 objectOutputStream.writeObject(data);
                 objectOutputStream.close();
                 outputStream.close();
+                button.setBackground(Color.green);
             } catch (IOException e) {
                 e.printStackTrace();
+                button.setBackground(Color.red);
             }
         });
         BottomPanel.add(saveGame);

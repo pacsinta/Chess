@@ -54,14 +54,10 @@ public class Pawn extends Piece {
 
         if (this.color) {
             if (elteres_Y == -1 && elteres_X == 1) {
-                System.out.println("x: "+elteres_X);
-                System.out.println("Y: "+elteres_Y);
                 return true;
             }
         } else {
             if (elteres_Y == 1 && elteres_X == 1) {
-                System.out.println("x: "+elteres_X);
-                System.out.println("Y: "+elteres_Y);
                 return true;
             }
         }

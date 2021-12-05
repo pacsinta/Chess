@@ -109,7 +109,6 @@ public abstract class Piece {
             if(checkOwnCollision(hova, moving) && checkPreCollision(hova, notMoving, moving)){
                 this.location.setXY(hova.getX(), hova.getY());
             }else{
-                System.out.println("t: "+checkOwnCollision(hova, moving));
                 throw new Exception("Van útban bábu!");
             }
         }else{

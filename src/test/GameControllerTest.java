@@ -2,6 +2,7 @@ package test;
 
 import Chess.Field;
 import Chess.GameController;
+import Chess.Gui.ChessTable;
 import Chess.Pieces.Pawn;
 import Chess.Player;
 import org.junit.Before;
@@ -17,7 +18,8 @@ public class GameControllerTest {
         Player player1 = new Player(true);
         Player player2 = new Player(false);
         JLabel t = new JLabel();
-        GameController controller = new GameController(player1, player2, t);
+        ChessTable table = new ChessTable();
+        GameController controller = new GameController(player1, player2, t, table);
 
         controller.Move(new Field(0, 1), new JButton("n"));
         controller.Move(new Field(0, 2), new JButton("n"));

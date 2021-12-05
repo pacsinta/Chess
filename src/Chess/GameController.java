@@ -1,9 +1,16 @@
 package Chess;
 
 import Chess.Enums.PlayerMoveTypes;
+import Chess.Gui.ChessTable;
+import Chess.Gui.EndPage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.LinkedList;
 
 public class GameController {
     PlayerMoveTypes currentMoveType = PlayerMoveTypes.WhiteSelectPiece;
@@ -11,6 +18,7 @@ public class GameController {
     Player blackPlayer;
 
     JButton selectedButton;
+    ChessTable table;
     Field selectedField;
 
     Timer timer;
@@ -23,10 +31,10 @@ public class GameController {
      * @param blackPlayer Fekete játékos referenciája
      * @param timeMonitor Az idő mutató referenciája
      */
-    public GameController(Player whitePlayer, Player blackPlayer, JLabel timeMonitor) {
+    public GameController(Player whitePlayer, Player blackPlayer, JLabel timeMonitor, ChessTable table) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
-
+        this.table = table;
         timer = new Timer(timeMonitor);
         Thread timerThread = new Thread(timer);
         timerThread.start();
@@ -164,14 +172,38 @@ public class GameController {
 
     /**
      * Befejezi a játékot, leállítja az órát.
-     * @return Visszaadja a játék adatait
      */
-    public GameData endGame(){
+    public void endGame(){
         timer.isRunning = false;
+
+        GameData gameData;
         if(currentMoveType == PlayerMoveTypes.WhiteMovePiece || currentMoveType == PlayerMoveTypes.WhiteSelectPiece){
-            return new GameData("WhitePlayer", "BlackPlayer", timer.getSeconds(), false, lepesszam);
+            gameData = new GameData("WhitePlayer", "BlackPlayer", timer.getSeconds(), false, lepesszam);
         }else{
-            return new GameData("WhitePlayer", "BlackPlayer", timer.getSeconds(), true, lepesszam);
+            gameData = new GameData("WhitePlayer", "BlackPlayer", timer.getSeconds(), true, lepesszam);
         }
+
+        table.dispose();
+
+        LinkedList<GameData> gameDataLinkedList = new LinkedList<>();
+        try {
+            FileInputStream inputStream = new FileInputStream("games.ser");
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+            LinkedList<?> bufferList = (LinkedList<?>) objectInputStream.readObject();
+            for (Object o : bufferList) {
+                if (o instanceof GameData) {
+                    gameDataLinkedList.add((GameData) o);
+                }
+            }
+            objectInputStream.close();
+            inputStream.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Ezelőtt még nem volt elmentve játék.");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        gameDataLinkedList.add(gameData);
+
+        new EndPage(gameDataLinkedList);
     }
 }

@@ -35,7 +35,7 @@ public class ChessTable extends JFrame {
         Player whitePlayer = new Player(true);
         Player blackPlayer = new Player(false);
 
-        GameController controller = new GameController(whitePlayer, blackPlayer, timeMonitor);
+        GameController controller = new GameController(whitePlayer, blackPlayer, timeMonitor, this);
 
         JButton[][] fields = new JButton[8][8];
         for (int x = 0; x<8; x++){
@@ -69,29 +69,7 @@ public class ChessTable extends JFrame {
 
         JButton giveUp = new JButton("Feladás");
         giveUp.addActionListener(listener->{
-            dispose();
-
-
-            LinkedList<GameData> gameDataLinkedList = new LinkedList<>();
-            try {
-                FileInputStream inputStream = new FileInputStream("games.ser");
-                ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-                LinkedList<?> bufferList = (LinkedList<?>) objectInputStream.readObject();
-                for (Object o : bufferList) {
-                    if (o instanceof GameData) {
-                        gameDataLinkedList.add((GameData) o);
-                    }
-                }
-                objectInputStream.close();
-                inputStream.close();
-            } catch (FileNotFoundException e) {
-                System.out.println("Ezelőtt még nem volt elmentve játék.");
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            gameDataLinkedList.add(controller.endGame());
-
-            new EndPage(gameDataLinkedList);
+            controller.endGame();
         });
         giveUp.setPreferredSize(new Dimension(80, 100));
         JPanel giveUpPanel = new JPanel();

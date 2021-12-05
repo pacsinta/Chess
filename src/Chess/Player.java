@@ -3,6 +3,7 @@ package Chess;
 import Chess.Pieces.*;
 
 import javax.swing.*;
+import javax.xml.stream.Location;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -36,6 +37,9 @@ public class Player {
             for(int i = 0; i<16; i++) {
                 piece[i].getLocation().inverz();
             }
+
+            piece[3].setLocation(new Field(3, 7));
+            piece[4].setLocation(new Field(4, 7));
         }
     }
 
@@ -162,36 +166,29 @@ public class Player {
      * @return
      */
     public Boolean checkMatt(Player other){
-        Field[] fields1 = new Field[16];
+        Piece[] piece2 = other.getPiece();
         for (int i = 0; i < 16; i++) {
-            fields1[i] = new Field(piece[i].getLocation().getX(), piece[i].getLocation().getY());
-        }
-
-        for (int i = 0; i < 16; i++) {
-            if(piece[i].isAlive){
-                for (int x = 0; x < 8; x++) {
-                    for (int y = 0; y < 8; y++) {
-                        try{
-                            selectedPiece = i;
-                            if(!new Field(x, y).isEqual(piece[selectedPiece].getLocation())){
-                                //piece[i].move(new Field(x, y), this, other);
-                                piece[i].checkPreCollision(new Field(x, y), other, this);
-                                if(!testCheck(piece[4].getLocation(), other)){
-                                    return false;
-                                }
-                                //piece[i].setLocation(new Field(fields1[i].getX(), fields1[i].getY()));
-                                if(i==0){
-                                    System.out.println("Test1x: "+piece[i].getLocation().getX() + " Test1y: "+piece[i].getLocation().getY());
-                                }
-                            }
-
-                            selectedPiece = -1;
-                        }catch (Exception ignored){
+            if(piece2[i].isAlive){
+                try{
+                    Field kingField = piece[4].getLocation();
+                    if(i == 3 && !piece2[i].color){
+                        if(piece2[i].checkMove(kingField)){
+                            System.out.println("can move ok");
+                        }
+                        if(piece2[i].checkOwnCollision(kingField, other)){
+                            System.out.println("Own collision ok");
+                        }
+                        if(piece2[i].checkPreCollision(kingField, other, this)){
+                            System.out.println("Other collision ok");
                         }
                     }
+                    if(piece2[i].checkMove(kingField) && piece2[i].checkOwnCollision(kingField, other) && piece2[i].checkPreCollision(kingField, this, other)){
+                        return true;
+                    }
+                }catch (Exception ignored){
                 }
             }
         }
-        return true;
+        return false;
     }
 }

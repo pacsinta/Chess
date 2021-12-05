@@ -14,9 +14,6 @@ public class King extends Piece{
 	public Boolean checkMove(Field hova) {
 		int elteres_X = Math.abs(this.location.getX()-hova.getX());
 		int elteres_Y = Math.abs(this.location.getY()-hova.getY());
-
-		System.out.println("x: "+elteres_X);
-		System.out.println("Y: "+elteres_Y);
 		return elteres_X <= 1 && elteres_Y <= 1;
 	}
 
