@@ -171,17 +171,6 @@ public class Player {
             if(piece2[i].isAlive){
                 try{
                     Field kingField = piece[4].getLocation();
-                    if(i == 3 && !piece2[i].color){
-                        if(piece2[i].checkMove(kingField)){
-                            System.out.println("can move ok");
-                        }
-                        if(piece2[i].checkOwnCollision(kingField, other)){
-                            System.out.println("Own collision ok");
-                        }
-                        if(piece2[i].checkPreCollision(kingField, other, this)){
-                            System.out.println("Other collision ok");
-                        }
-                    }
                     if(piece2[i].checkMove(kingField) && piece2[i].checkOwnCollision(kingField, other) && piece2[i].checkPreCollision(kingField, this, other)){
                         return true;
                     }
